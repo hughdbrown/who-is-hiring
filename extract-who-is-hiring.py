@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 import json
+from pathlib import Path
 from pprint import pprint
 import re
 
-from pathlib import Path
-
+from bs4 import BeautifulSoup
 
 def main():
     rust_re = re.compile(r'''\brust\b''', re.IGNORECASE)
@@ -24,8 +24,9 @@ def main():
                     if rust_re.search(text):
                         # c = company_re.search(text)
                         # d[c].append(date)
-                        re_result = first_line_re.search(text)
-                        first_line = re_result.group(1) if re_result else text[:100]
+                        soup = BeautifulSoup(text, "lxml")
+                        # re_result = first_line_re.search(text)
+                        first_line = soup.find(text=True)
                         print(f"{i} {first_line}")
 
 
