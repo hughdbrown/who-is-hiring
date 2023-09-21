@@ -26,7 +26,7 @@ def main():
                         # d[c].append(date)
                         soup = BeautifulSoup(text, "lxml")
                         # re_result = first_line_re.search(text)
-                        first_line = soup.find(text=True)
+                        first_line = (" ".join(soup.find_all(text=True))).splitlines()[0]
                         print(f"{i} {first_line}")
 
 
