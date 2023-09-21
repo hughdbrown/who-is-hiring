@@ -5,29 +5,34 @@ from pprint import pprint
 import re
 
 from bs4 import BeautifulSoup
+import click
 
-def main():
-    rust_re = re.compile(r'''\brust\b''', re.IGNORECASE)
-    # Formatting is not reliable enough to extract company name
-    # company_re = re.compile(r'''^\<p\>(.*?)\|''')
-    first_line_re = re.compile(r'''^\<p\>(.*?)\<\/p\>''')
-    date_re = re.compile(r'''(\d{4}-\d{2}-\d{2})''')
+RUST_RE = re.compile(r'''\brust\b''', re.IGNORECASE)
+DATE_RE = re.compile(r'''(\d{4}-\d{2}-\d{2})''')
+
+
+@click.command()
+@click.option('-c', '--company', required=False, type=str)
+def main(company=None):
+    if company:
+        print(f"Searching for '{company}'")
     for p in sorted(Path().home().glob("hacker-news-*.json")):
-        date = date_re.search(str(p)).group(1)
-        print(f"{'-' * 20} {date}")
+        date = DATE_RE.search(str(p)).group(1)
         with p.open("r", encoding="utf-8") as handle:
             data = json.load(handle)
-            print(f"{p.name}: {len(data['children'])}")
+            print(f"{'-' * 20} {date} {p.name}: {len(data['children'])}")
             for i, child in enumerate(data["children"]):
                 text = child['text']
                 if text is not None:
-                    if rust_re.search(text):
-                        # c = company_re.search(text)
-                        # d[c].append(date)
-                        soup = BeautifulSoup(text, "lxml")
-                        # re_result = first_line_re.search(text)
-                        first_line = (" ".join(soup.find_all(text=True))).splitlines()[0]
-                        print(f"{i} {first_line}")
+                    soup = BeautifulSoup(text, "lxml")
+                    text = " ".join(soup.find_all(text=True))
+                    if RUST_RE.search(text):
+                        if company:
+                            if company in text:
+                                print(text)
+                        else:
+                            first_line = text.splitlines()[0]
+                            print(f"{i} {first_line[:100]}")
 
 
 if __name__ == '__main__':
