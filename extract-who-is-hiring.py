@@ -7,7 +7,7 @@ import re
 from bs4 import BeautifulSoup
 import click
 
-RUST_RE = re.compile(r'''\brust\b''', re.IGNORECASE)
+RUST_RE = re.compile(r'''([^a-z]rust[^a-z])''', re.IGNORECASE)
 DATE_RE = re.compile(r'''(\d{4}-\d{2}-\d{2})''')
 
 
