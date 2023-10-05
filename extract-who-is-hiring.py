@@ -16,6 +16,7 @@ DATE_RE = re.compile(r'''(\d{4}-\d{2}-\d{2})''')
 def main(company=None):
     if company:
         print(f"Searching for '{company}'")
+        company_re = re.compile(fr'''\b{company}\b''', re.IGNORECASE)
     for p in sorted(Path().home().glob("hacker-news-*.json")):
         date = DATE_RE.search(str(p)).group(1)
         with p.open("r", encoding="utf-8") as handle:
@@ -28,7 +29,7 @@ def main(company=None):
                     text = " ".join(soup.find_all(text=True))
                     if RUST_RE.search(text):
                         if company:
-                            if company in text:
+                            if company_re.search(text):
                                 print(text)
                         else:
                             first_line = text.splitlines()[0]
