@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
-from collections import defaultdict
-import json
 from pathlib import Path
-from pprint import pprint
 import re
 
 from bs4 import BeautifulSoup
@@ -11,33 +8,40 @@ import click
 RUST_RE = re.compile(r'''([^a-z]rust[^a-z])''', re.IGNORECASE)
 DATE_RE = re.compile(r'''(\d{4}-\d{2}-\d{2})''')
 
+# from whyslow import profile
+
+
+def process_child(text, items, company_re, i):
+    if (m := RUST_RE.search(text)):
+        if company_re:
+            if company_re.search(text):
+                #print(text)
+                items.append(text)
+        else:
+            first_line = text.splitlines()[0]
+            items.append((f"{i} {first_line[:100]}"))
+
 
 @click.command()
 @click.option('-c', '--company', required=False, type=str)
+# @profile()
 def main(company=None):
-    d = defaultdict(set)
-    if company:
-        print(f"Searching for '{company}'")
-        company_re = re.compile(fr'''\b{company}\b''', re.IGNORECASE)
-    for p in sorted(Path().home().glob("hacker-news-*.json")):
+    company_re = (
+        re.compile(fr'''\b{company}\b''', re.IGNORECASE) if company
+        else None
+    )
+
+    for p in sorted(Path().home().glob("hacker-news-*.txt")):
         date = DATE_RE.search(str(p)).group(1)
         with p.open("r", encoding="utf-8") as handle:
-            data = json.load(handle)
-            print(f"{'-' * 20} {date} {p.name}: {len(data['children'])}")
-            for i, child in enumerate(data["children"]):
-                text = child['text']
-                if text is not None:
-                    soup = BeautifulSoup(text, "lxml")
-                    text = " ".join(soup.find_all(text=True))
-                    if (m := RUST_RE.search(text)):
-                        if company:
-                            if company_re.search(text):
-                                print(text)
-                        else:
-                            first_line = text.splitlines()[0]
-                            print(f"{i} {first_line[:100]}")
-                        match = m.group(1)
-                        d[match].add(str(p))
+            children = handle.readlines()
+            items = [
+                f"{'-' * 20} {date} {p.name}: {len(children)}",
+            ]
+            for i, text in enumerate(children):
+                text = text.replace("\t", "\n")
+                process_child(text, items, company_re, i)
+            print("\n".join(items))
 
     #for k, v in sorted(d.items()):
     #    for p in sorted(v):
