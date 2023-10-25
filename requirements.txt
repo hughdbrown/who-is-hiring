@@ -2,4 +2,3 @@ click
 requests
 beautifulsoup4
 python-lxml
-
