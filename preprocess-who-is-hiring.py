@@ -5,6 +5,8 @@ import re
 
 from bs4 import BeautifulSoup
 
+import get_config
+
 DATE_RE = re.compile(r'''(\d{4}-\d{2}-\d{2})''')
 
 # from whyslow import profile
@@ -16,7 +18,8 @@ def all_text(text):
 
 # @profile()
 def main():
-    for path_in in sorted(Path().home().glob("hacker-news-*.json")):
+    config_dir:Path = get_config.cache_dir()
+    for path_in in sorted(config_dir.glob("hacker-news-*.json")):
         date = DATE_RE.search(str(path_in)).group(1)
         with path_in.open("r", encoding="utf-8") as handle:
             data = json.load(handle)

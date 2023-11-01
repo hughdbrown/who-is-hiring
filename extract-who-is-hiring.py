@@ -4,6 +4,8 @@ import re
 
 import click
 
+import get_config
+
 RUST_RE = re.compile(r'''([^a-z]rust[^a-z])''', re.IGNORECASE)
 DATE_RE = re.compile(r'''(\d{4}-\d{2}-\d{2})''')
 
@@ -30,7 +32,8 @@ def main(company=None):
         else None
     )
 
-    for p in sorted(Path().home().glob("hacker-news-*.txt")):
+    config_dir: Path = get_config.cache_dir()
+    for p in sorted(config_dir.glob("hacker-news-*.txt")):
         date = DATE_RE.search(str(p)).group(1)
         with p.open("r", encoding="utf-8") as handle:
             children = handle.readlines()

@@ -6,6 +6,8 @@ from typing import Any, Dict
 
 import requests
 
+import get_config
+
 from data import IDS
 
 def main():
@@ -23,9 +25,9 @@ def main():
         with pj.open("w", encoding="utf-8") as handle:
             json.dump(data, handle, sort_keys=True, indent=4)
 
-    home = Path().home()
+    config_dir: Path = get_config.cache_dir()
     for article_id, date in IDS.items():
-        pj: Path = home.joinpath(f"hacker-news-{date}.json")
+        pj: Path = config_dir.joinpath(f"hacker-news-{date}.json")
         if not pj.exists():
             data = get_data(article_id)
             print(f"{date}: {len(data['children'])} listings")
