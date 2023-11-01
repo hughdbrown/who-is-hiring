@@ -2,7 +2,6 @@
 from pathlib import Path
 import re
 
-from bs4 import BeautifulSoup
 import click
 
 RUST_RE = re.compile(r'''([^a-z]rust[^a-z])''', re.IGNORECASE)

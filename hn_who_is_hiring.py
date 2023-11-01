@@ -9,6 +9,8 @@ import requests
 from data import IDS
 
 def main():
+    """Main entry point for downloading Who Is Hiring data"""
+
     def get_data(article_id: int):
         """Read "Who Is Hiring?" posts for a month from Hacker News."""
         headers = {'Accept': 'application/json'}
