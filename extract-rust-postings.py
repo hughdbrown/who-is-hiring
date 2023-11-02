@@ -43,7 +43,8 @@ def main(company=None):
             for i, text in enumerate(children):
                 text = text.replace("\t", "\n")
                 process_child(text, items, company_re, i)
-            print("\n".join(items))
+            if len(items) > 1:
+                print("\n".join(items))
 
     #for k, v in sorted(d.items()):
     #    for p in sorted(v):
