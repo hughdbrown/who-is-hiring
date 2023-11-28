@@ -13,7 +13,7 @@ DATE_RE = re.compile(r'''(\d{4}-\d{2}-\d{2})''')
 
 def all_text(text):
     soup = BeautifulSoup(text, "lxml")
-    return " ".join(soup.find_all(text=True))
+    return " ".join(soup.find_all(string=True))
 
 
 # @profile()
