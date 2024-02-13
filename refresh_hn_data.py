@@ -8,7 +8,7 @@ import get_config
 @click.command()
 @click.option('-y', '--year', required=False, type=str)
 @click.option('-m', '--month', required=False, type=str)
-def main(year, month):
+def main(year=None, month=None):
     year = year or "20*"
     month = month or "*"
 
@@ -19,6 +19,7 @@ def main(year, month):
     ]
     for glob in globs:
         for p in sorted(config_dir.glob(glob)):
+            print(f"Deleting {str(p)}")
             p.unlink()
 
 
