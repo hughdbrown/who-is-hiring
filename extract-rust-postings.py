@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+import logging
+import os
 from pathlib import Path
 import re
 
@@ -8,6 +10,14 @@ import get_config
 
 RUST_RE = re.compile(r'''([^a-z]rust[^a-z])''', re.IGNORECASE)
 DATE_RE = re.compile(r'''(\d{4}-\d{2}-\d{2})''')
+
+logging.basicConfig(
+    format="%(asctime)s %(message)s",
+    datefmt="%Y-%m-%dT%H:%M:%S",
+    # logger levels are: DEBUG, INFO, WARNING, ERROR, CRITICAL
+    level=os.environ.get('LOGLEVEL', 'INFO').upper(),
+)
+logger = logging.getLogger()
 
 # from whyslow import profile
 
@@ -34,6 +44,7 @@ def main(company=None):
 
     config_dir: Path = get_config.cache_dir()
     for p in sorted(config_dir.glob("hacker-news-*.txt")):
+        logger.debug(f"Reading {str(p)}")
         date = DATE_RE.search(str(p)).group(1)
         with p.open("r", encoding="utf-8") as handle:
             children = handle.readlines()
