@@ -55,6 +55,7 @@ def main(company=None):
                 text = text.replace("\t", "\n")
                 process_child(text, items, company_re, i)
             if len(items) > 1:
+                items[0] = f"{items[0]} {len(items) - 1} {(len(items) - 1) / len(children):.03f}"
                 print("\n".join(items))
 
     #for k, v in sorted(d.items()):
