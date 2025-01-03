@@ -4,6 +4,17 @@ from collections import defaultdict
 import re
 import sys
 
+def make_display(co_dates, dates):
+    display = []
+    i = 0
+    for date in dates:
+        if i < len(co_dates) and date == co_dates[i]:
+            display.append('X')
+            i += 1
+        else:
+            display.append('.')
+    return "".join(display)
+
 def main():
     co_reg = re.compile(r'''^\d+ ([^|]+)|''')
     date_reg = re.compile(r'^[-]+ ([0-9-]+)')
@@ -19,14 +30,7 @@ def main():
             companies[company].append(current_date)
 
     for (co, co_dates) in sorted(companies.items()):
-        display = []
-        i = 0
-        for date in dates:
-            if i < len(co_dates) and date == co_dates[i]:
-                display.append('X')
-                i += 1
-            else:
-                display.append('.')
+        display = make_display(co_dates, dates)
 
         # If the company name is longer than 50 characters, likely it is filled in wrong
         print(f"{''.join(display)} {co[:50]}")
