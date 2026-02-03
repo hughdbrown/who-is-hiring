@@ -3,6 +3,7 @@
 # https://news.ycombinator.com/submitted?id=whoishiring
 
 IDS = {
+    46857488: "2026-02-01",
     46466074: "2026-01-01",
 
     46108941: "2025-12-01",
